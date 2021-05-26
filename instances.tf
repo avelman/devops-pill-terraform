@@ -49,23 +49,28 @@ resource "aws_instance" "jenkins-master" {
 
   depends_on = [aws_main_route_table_association.set-master-default-rt-assoc]
 
-  provisioner "remote-exec" { # https://www.terraform.io/docs/language/resources/provisioners/remote-exec.html
-    inline = [
-      "sudo amazon-linux-extras enable nginx1.12",
-      "sudo yum -y install nginx",
-      "sudo systemctl start nginx",
-    ]
+  user_data = <<-EOF
+      #!/bin/bash
+      sudo amazon-linux-extras enable nginx1.12
+      sudo yum -y install nginx
+      sudo systemctl start nginx
+      EOF
 
-  }
-  connection {
-    type = "ssh"
-    user = "ec2-user"
-    #password = ""
-    host        = self.public_ip # https://www.terraform.io/docs/language/resources/provisioners/connection.html
-    private_key = file("./ssh/aws-key")
-  }
+  # provisioner "remote-exec" { # https://www.terraform.io/docs/language/resources/provisioners/remote-exec.html
+  #   inline = [
+  #     "sudo amazon-linux-extras enable nginx1.12",
+  #     "sudo yum -y install nginx",
+  #     "sudo systemctl start nginx",
+  #   ]
 
-
+  # }
+  # connection {
+  #   type = "ssh"
+  #   user = "ec2-user"
+  #   #password = ""
+  #   host        = self.public_ip # https://www.terraform.io/docs/language/resources/provisioners/connection.html
+  #   private_key = file("./ssh/aws-key")
+  # }
 }
 
 # Create EC2 in us-west-2
