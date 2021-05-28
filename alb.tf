@@ -1,12 +1,13 @@
+# aws_lb.application-lb: Creation complete after 3m12s
 resource "aws_lb" "application-lb" {
   provider           = aws.region-master
-  name               = "jenkins-lb"
+  name               = "application-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb-sg.id]                    # list of SG
   subnets            = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id] # list of Subnets for HA
   tags = {
-    Name = "Jenkins-LB"
+    Name = "Application-LB"
   }
 }
 
@@ -26,11 +27,11 @@ resource "aws_lb_target_group" "app-lb-tg" {
     matcher  = "200-299"
   }
   tags = {
-    Name = "jenkins-target-group"
+    Name = "master-target-group"
   }
 }
 
-resource "aws_lb_listener" "jenkins-listener-http" {
+resource "aws_lb_listener" "master-listener-http" {
   provider          = aws.region-master
   load_balancer_arn = aws_lb.application-lb.arn
   port              = "80"
@@ -41,9 +42,9 @@ resource "aws_lb_listener" "jenkins-listener-http" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "jenkins-master-attach" {
+resource "aws_lb_target_group_attachment" "master-attach" {
   provider         = aws.region-master
   target_group_arn = aws_lb_target_group.app-lb-tg.arn
-  target_id        = aws_instance.jenkins-master.id
+  target_id        = aws_instance.master-instance.id
   port             = var.webserver-port
 }

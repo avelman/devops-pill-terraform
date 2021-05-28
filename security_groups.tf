@@ -3,7 +3,7 @@
 resource "aws_security_group" "lb-sg" {
   provider    = aws.region-master
   name        = "lb-sg"
-  description = "Allow 443 and traffic to Jenkins SG"
+  description = "Allow 443 and traffic to Master Instance SG"
   vpc_id      = aws_vpc.vpc_master.id
 
   ingress {
@@ -31,9 +31,9 @@ resource "aws_security_group" "lb-sg" {
 }
 
 # Create SG for allowing TCP from * and TCP/22 from your IP in us-east-1
-resource "aws_security_group" "jenkins-sg" {
+resource "aws_security_group" "master-sg" {
   provider    = aws.region-master
-  name        = "jenkins-sg"
+  name        = "master-sg"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_master.id
 
@@ -70,10 +70,10 @@ resource "aws_security_group" "jenkins-sg" {
 }
 
 # Create SG for allowing TCP/22 from your IP in us-west-2
-resource "aws_security_group" "jenkins-sg-oregon" {
+resource "aws_security_group" "worker-sg-oregon" {
   provider = aws.region-worker
 
-  name        = "jenkins-sg-oregon"
+  name        = "worker-sg-oregon"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_master_oregon.id
 

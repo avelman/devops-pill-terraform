@@ -1,12 +1,12 @@
-output "Jenkins-Main-Node-Public-IP" { # free form label for the output
-  value = aws_instance.jenkins-master.public_ip
+output "Master-Node-Public-IP" { # free form label for the output
+  value = aws_instance.master-instance.public_ip
 }
 
 # This output block will iterate over all Oregon Instances and fetch each IP
-output "Jenkins-Worker-Public-IPs" {
+output "Worker-Node-Public-IPs" {
   value = {
-    for instance in aws_instance.jenkins-worker-oregon : # https://www.terraform.io/docs/language/expressions/for.html
-    instance.id => instance.public_ip                    # https://www.terraform.io/docs/language/expressions/for.html#result-types
+    for instance in aws_instance.worker-instance-oregon : # https://www.terraform.io/docs/language/expressions/for.html
+    instance.id => instance.public_ip                     # https://www.terraform.io/docs/language/expressions/for.html#result-types
   }
 }
 
